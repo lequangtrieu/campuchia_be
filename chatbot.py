@@ -15,14 +15,12 @@ def detect_scam():
     #System prompt
     system_prompt = {
         "role": "system",
-        "content": (
-            """Bạn là một AI chuyên phát hiện nội dung lừa đảo (scam/phishing). "
+        "content": """Bạn là một AI chuyên phát hiện nội dung lừa đảo (scam/phishing). "
             Phân tích đoạn chat hoặc tin nhắn người dùng gửi"""
             # "và trả lời một trong hai dạng:\n"
             # "1️⃣ '⚠️ Có dấu hiệu lừa đảo' — kèm lý do (ví dụ: hứa hẹn tiền, link giả mạo, thông tin nhạy cảm).\n"
             # "2️⃣ '✅ Không có dấu hiệu lừa đảo' — nếu tin nhắn an toàn, tự nhiên.\n"
             # "Hãy thật ngắn gọn và dễ hiểu cho người dùng bình thường."
-        )
     }
 
     fewshot_prompts = [
@@ -31,7 +29,7 @@ def detect_scam():
         },
         {
             "role" : "assistant", "content" : "⚠️ Có dấu hiệu lừa đảo"
-        }
+        },
         {
             "role" : "user", "content" : "Hệ thống phát hiện máy tính của bạn có virus. Gọi ngay hotline 1800-XXX-XXX để được hỗ trợ và tránh mất dữ liệu."
         },
@@ -85,7 +83,7 @@ def detect_scam():
             model="GPT-4o-mini",
             messages=conversation,
             temperature=0.3,
-            function=functions,
+            functions=functions,
             function_call={"names":"check_scam"}
         )
 
