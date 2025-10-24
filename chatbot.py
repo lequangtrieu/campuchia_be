@@ -16,12 +16,12 @@ def detect_scam():
     system_prompt = {
         "role": "system",
         "content": (
-            "Bạn là một AI chuyên phát hiện nội dung lừa đảo (scam/phishing). "
-            "Phân tích đoạn chat hoặc tin nhắn người dùng gửi, "
-            "và trả lời một trong hai dạng:\n"
-            "1️⃣ '⚠️ Có dấu hiệu lừa đảo' — kèm lý do (ví dụ: hứa hẹn tiền, link giả mạo, thông tin nhạy cảm).\n"
-            "2️⃣ '✅ Không có dấu hiệu lừa đảo' — nếu tin nhắn an toàn, tự nhiên.\n"
-            "Hãy thật ngắn gọn và dễ hiểu cho người dùng bình thường."
+            """Bạn là một AI chuyên phát hiện nội dung lừa đảo (scam/phishing). "
+            Phân tích đoạn chat hoặc tin nhắn người dùng gửi"""
+            # "và trả lời một trong hai dạng:\n"
+            # "1️⃣ '⚠️ Có dấu hiệu lừa đảo' — kèm lý do (ví dụ: hứa hẹn tiền, link giả mạo, thông tin nhạy cảm).\n"
+            # "2️⃣ '✅ Không có dấu hiệu lừa đảo' — nếu tin nhắn an toàn, tự nhiên.\n"
+            # "Hãy thật ngắn gọn và dễ hiểu cho người dùng bình thường."
         )
     }
 
@@ -55,6 +55,25 @@ def detect_scam():
     conversation.append(system_prompt)
     conversation.append(fewshot_prompts)
 
+    # Define a function schema
+    functions = [
+        {
+            "name": "check_scam",
+            "description": "Classify a message as scam or not",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": ["⚠️ Có dấu hiệu lừa đảo", "✅ Không có dấu hiệu lừa đảo"],
+                        "description": "Scam status"
+                    }
+                },
+                "required": ["status"]
+            }
+        }
+    ]
+
     while True:
         user_input = input("Tin nhắn: ")
         if user_input.lower() == "exit":
@@ -65,7 +84,9 @@ def detect_scam():
         response = client.chat.completions.create(
             model="GPT-4o-mini",
             messages=conversation,
-            temperature=0.3
+            temperature=0.3,
+            function=functions,
+            function_call={"names":"check_scam"}
         )
 
         ai_message = response.choices[0].message.content
