@@ -9,19 +9,51 @@ def detect_scam():
     print("=== Scam Detector Chat ===")
     print("Dán tin nhắn hoặc đoạn chat vào đây (gõ 'exit' để thoát)\n")
 
-    conversation = [
+    #Conversation diaglouge
+    conversation = []
+
+    #System prompt
+    system_prompt = {
+        "role": "system",
+        "content": (
+            "Bạn là một AI chuyên phát hiện nội dung lừa đảo (scam/phishing). "
+            "Phân tích đoạn chat hoặc tin nhắn người dùng gửi, "
+            "và trả lời một trong hai dạng:\n"
+            "1️⃣ '⚠️ Có dấu hiệu lừa đảo' — kèm lý do (ví dụ: hứa hẹn tiền, link giả mạo, thông tin nhạy cảm).\n"
+            "2️⃣ '✅ Không có dấu hiệu lừa đảo' — nếu tin nhắn an toàn, tự nhiên.\n"
+            "Hãy thật ngắn gọn và dễ hiểu cho người dùng bình thường."
+        )
+    }
+
+    fewshot_prompts = [
         {
-            "role": "system",
-            "content": (
-                "Bạn là một AI chuyên phát hiện nội dung lừa đảo (scam/phishing). "
-                "Phân tích đoạn chat hoặc tin nhắn người dùng gửi, "
-                "và trả lời một trong hai dạng:\n"
-                "1️⃣ '⚠️ Có dấu hiệu lừa đảo' — kèm lý do (ví dụ: hứa hẹn tiền, link giả mạo, thông tin nhạy cảm).\n"
-                "2️⃣ '✅ Không có dấu hiệu lừa đảo' — nếu tin nhắn an toàn, tự nhiên.\n"
-                "Hãy thật ngắn gọn và dễ hiểu cho người dùng bình thường."
-            )
+            "role" : "user", "content" : "Tài khoản của bạn vừa bị đăng nhập ở nơi khác. Vui lòng nhấn vào link để xác nhận thông tin và bảo vệ tài khoản của bạn."
+        },
+        {
+            "role" : "assistant", "content" : "⚠️ Có dấu hiệu lừa đảo"
+        }
+        {
+            "role" : "user", "content" : "Hệ thống phát hiện máy tính của bạn có virus. Gọi ngay hotline 1800-XXX-XXX để được hỗ trợ và tránh mất dữ liệu."
+        },
+        {
+            "role" : "assistant", "content" : "⚠️ Có dấu hiệu lừa đảo"
+        },
+        {
+            "role" : "user", "content" : "Chào bạn, hôm nay bạn thế nào?"
+        },
+        {
+            "role" : "assistant", "content" : "✅ Không có dấu hiệu lừa đảo"
+        },
+        {
+            "role" : "user", "content" : "Mẹ nấu cơm xong rồi, về ăn nhé."
+        },
+        {
+            "role" : "assistant", "content" : "✅ Không có dấu hiệu lừa đảo"
         }
     ]
+
+    conversation.append(system_prompt)
+    conversation.append(fewshot_prompts)
 
     while True:
         user_input = input("Tin nhắn: ")
